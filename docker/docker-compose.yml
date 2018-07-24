@@ -1,0 +1,41 @@
+version: '2'
+services:
+  php56:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    image: php_image
+    container_name: php_container
+    ports:
+      - 801:80
+    volumes:
+      - ./wordpress:/var/www/html
+    tty: true
+    depends_on:
+      - mysql55
+  mysql55:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    image: mysql_image
+    container_name: mysql_container
+    volumes:
+      - mysql_dbdata:/var/lib/mysql
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql55
+      - PMA_USER=root
+      - PMA_PASSWORD=pass
+    depends_on:
+      - mysql55
+    ports:
+      - 802:80
+    volumes:
+      - /sessions
+volumes:
+  mysql_dbdata:

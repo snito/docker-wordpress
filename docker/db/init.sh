@@ -1,0 +1,1 @@
+mysql -u root --pass=pass < init.sql
